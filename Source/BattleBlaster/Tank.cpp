@@ -2,6 +2,9 @@
 
 
 #include "Tank.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputSubsystems.h"
+
 
 ATank::ATank()
 {
@@ -42,5 +45,46 @@ void ATank::Tick(float DeltaTime)
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	
+	if (UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComp->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATank::MoveInput);
+		EnhancedInputComp->BindAction(RotateAction, ETriggerEvent::Triggered, this, &ATank::RotateInput);
+	}
+}
+
+void ATank::MoveInput(const FInputActionValue& value)
+{
+	UE_LOG(LogTemp, Display, TEXT("MoveInput was called!"));
+
+	float InputValue = value.Get<float>();
+
+	FVector DeltaLocation = FVector(0.0f, 0.0f, 0.0f);
+	DeltaLocation.X = InputValue * Speed * GetWorld()->GetDeltaSeconds();
+
+	FHitResult* ActorHitResult = new FHitResult();
+
+	AddActorLocalOffset(DeltaLocation, true, ActorHitResult);
+	
+	if(AActor* CollidedActor = ActorHitResult->GetActor())
+	{
+		UE_LOG(LogTemp, Display, TEXT("Collided with: %s"), *CollidedActor->GetName());
+	}
+
+
+	UE_LOG(LogTemp, Display, TEXT("Delta Location: %s"), *DeltaLocation.ToCompactString());
+
+}
+
+void ATank::RotateInput(const FInputActionValue& value)
+{
+	FRotator DeltaRotation = FRotator(0.0f, 0.0f, 0.0f);
+	
+	float InputValue = value.Get<float>();
+	DeltaRotation.Yaw = InputValue * RotationSpeed * GetWorld()->GetDeltaSeconds();
+
+	AddActorLocalRotation(DeltaRotation, true);
+	UE_LOG(LogTemp, Display, TEXT("Delta Rotation: %s"), *DeltaRotation.ToCompactString());
 
 }
