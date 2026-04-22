@@ -19,3 +19,19 @@ ABasePawn::ABasePawn()
 	TurretMesh->SetupAttachment(BaseMesh);
 }
 
+void ABasePawn::RotateTurret(FVector LookAtTarget)
+{
+	//TurretMesh->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(TurretMesh->GetComponentLocation(), LookAtTarget));
+	FVector DirectionToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
+	FRotator LookAtRotation = FRotator(0.0f, DirectionToTarget.Rotation().Yaw, 0.0f);
+
+	FRotator InterpolatedRotation = FMath::RInterpTo(
+		TurretMesh->GetComponentRotation(),
+		LookAtRotation,
+		GetWorld()->GetDeltaSeconds(),
+		TurretRotationSpeed
+	);
+
+	TurretMesh->SetWorldRotation(InterpolatedRotation);
+
+}

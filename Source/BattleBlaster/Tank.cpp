@@ -39,6 +39,17 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (APlayerController* APController = Cast<APlayerController>(Controller)) {
+		FHitResult HitResultOut;
+		
+		APController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResultOut);
+		//HitResultOut.ImpactPoint
+		DrawDebugSphere(GetWorld(), HitResultOut.ImpactPoint, 25.0f, 12, FColor::Red, false, -1.0f);
+
+		if (HitResultOut.ImpactPoint != FVector::ZeroVector) {
+			RotateTurret(HitResultOut.ImpactPoint);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -88,3 +99,5 @@ void ATank::RotateInput(const FInputActionValue& value)
 	UE_LOG(LogTemp, Display, TEXT("Delta Rotation: %s"), *DeltaRotation.ToCompactString());
 
 }
+
+
