@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Projectile.h"
 #include "BasePawn.generated.h"
 
 UCLASS()
@@ -28,9 +28,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* TurretMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* ProjectileSpawnPoint;
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurretRotationSpeed = 5.25f;
 
 	void RotateTurret(FVector LookAtTarget);
+
+	virtual void Fire();
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<AProjectile> ProjectileClass;
 };

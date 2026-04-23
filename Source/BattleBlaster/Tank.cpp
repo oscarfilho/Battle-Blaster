@@ -62,6 +62,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		EnhancedInputComp->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATank::MoveInput);
 		EnhancedInputComp->BindAction(RotateAction, ETriggerEvent::Triggered, this, &ATank::RotateInput);
+		EnhancedInputComp->BindAction(FireAction, ETriggerEvent::Started, this, &ATank::Fire);
 	}
 }
 
@@ -99,5 +100,3 @@ void ATank::RotateInput(const FInputActionValue& value)
 	UE_LOG(LogTemp, Display, TEXT("Delta Rotation: %s"), *DeltaRotation.ToCompactString());
 
 }
-
-

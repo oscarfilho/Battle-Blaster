@@ -32,4 +32,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	ATank* Tank;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float FireTimerInterval = 2.0f;
+
+	void CheckFireCondition();
+
+	bool InFireRange();
 };

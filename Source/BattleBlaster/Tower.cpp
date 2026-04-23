@@ -5,13 +5,14 @@
 
 ATower::ATower()
 {
-	UE_LOG(LogTemp, Display, TEXT("Tower constructor was called!"));
 }
 
 
 void ATower::BeginPlay()
 {
 	Super::BeginPlay();
+	FTimerHandle FireRateTimerHandle;
+	GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &ATower::CheckFireCondition, FireTimerInterval, true);
 }
 
 
@@ -19,14 +20,22 @@ void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	double DistanceToTank = FVector::Dist(Tank->GetActorLocation(), GetActorLocation());
-	
-	if (DistanceToTank <= FireRange) {
-		UE_LOG(LogTemp, Display, TEXT("Tank is at sight! FIREEEE"));
+	if (InFireRange()) {
 		RotateTurret(Tank->GetActorLocation());
 	}
-
-
-	RotateTurret(Tank->GetActorLocation());
 }
 
+void ATower::CheckFireCondition()
+{
+	if(Tank && InFireRange()) {
+		Fire();
+	}
+}
+
+
+bool ATower::InFireRange() {
+	if(Tank && FVector::Dist(Tank->GetActorLocation(), GetActorLocation()) <= FireRange) {
+		return true;
+	}
+	return false;
+}
