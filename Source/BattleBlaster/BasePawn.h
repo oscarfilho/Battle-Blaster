@@ -30,7 +30,7 @@ public:
 	UStaticMeshComponent* TurretMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float TurretRotationSpeed = 0.25f;
+	float TurretRotationSpeed = 5.25f;
 
 	void RotateTurret(FVector LookAtTarget);
 };

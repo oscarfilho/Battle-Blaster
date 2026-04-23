@@ -19,5 +19,14 @@ void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	double DistanceToTank = FVector::Dist(Tank->GetActorLocation(), GetActorLocation());
+	
+	if (DistanceToTank <= FireRange) {
+		UE_LOG(LogTemp, Display, TEXT("Tank is at sight! FIREEEE"));
+		RotateTurret(Tank->GetActorLocation());
+	}
+
+
+	RotateTurret(Tank->GetActorLocation());
 }
 
