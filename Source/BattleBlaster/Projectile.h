@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.generated.h"
+
 
 UCLASS()
 class BATTLEBLASTER_API AProjectile : public AActor
@@ -27,4 +29,9 @@ public:
 	UStaticMeshComponent* ProjectileMesh;
 
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	UProjectileMovementComponent* ProjectileMovementComp;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

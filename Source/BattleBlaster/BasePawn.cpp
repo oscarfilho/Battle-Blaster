@@ -47,7 +47,10 @@ void ABasePawn::Fire()
 
 	//DrawDebugSphere(GetWorld(), SpawnLocation, 25.0f, 12, FColor::Red, false, 3.0f);
 
-	GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+	if (AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnLocation, SpawnRotation)) {
+		Projectile->SetOwner(this);
+	}
+
 
 	UE_LOG(LogTemp, Display, TEXT("Spawn Location: %s"), *SpawnLocation.ToCompactString());
 	UE_LOG(LogTemp, Display, TEXT("Spawn Rotation: %s"), *SpawnRotation.ToCompactString());
