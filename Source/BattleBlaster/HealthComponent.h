@@ -30,4 +30,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	float Health = 0.0f;
 	
+	UFUNCTION()
+	void OnDamageTaken(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
 };
