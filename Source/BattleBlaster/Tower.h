@@ -38,4 +38,6 @@ public:
 	void CheckFireCondition();
 
 	bool InFireRange();
+
+	void HandleDestruction();
 };

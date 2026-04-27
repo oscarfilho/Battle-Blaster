@@ -2,6 +2,8 @@
 
 
 #include "HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -18,6 +20,12 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(GetWorld());
+	if (GameMode) {
+		BattleBlasterGameMode = Cast< ABattleBlasterGameMode>(GameMode);
+	}
+
 
 	Health = MaxHealth;
 	
@@ -42,7 +50,9 @@ void UHealthComponent::OnDamageTaken(AActor* DamagedActor, float Damage, const U
 
 		if (Health <= 0.0f) {
 			UE_LOG(LogTemp, Warning, TEXT("The Actor %s has died!"), *DamagedActor->GetActorNameOrLabel());
-			GetOwner()->Destroy();
+			if (BattleBlasterGameMode) {
+				BattleBlasterGameMode->ActorDied(DamagedActor);
+			}
 		}
 	}
 }

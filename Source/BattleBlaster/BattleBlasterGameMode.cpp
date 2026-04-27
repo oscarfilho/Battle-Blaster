@@ -4,6 +4,7 @@
 #include "BattleBlasterGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Tower.h"
+#include "Tank.h"
 
 ABattleBlasterGameMode::ABattleBlasterGameMode()
 {
@@ -29,18 +30,6 @@ void ABattleBlasterGameMode::BeginPlay()
 		}
 	}
 
-	UE_LOG(LogTemp, Display, TEXT("Start of the loop: "));
-	int32 LoopIndex = 0;
-
-	while (LoopIndex < 10) 
-	{
-		UE_LOG(LogTemp, Display, TEXT("Body of the loop"));
-		LoopIndex++;
-	}
-
-	UE_LOG(LogTemp, Display, TEXT("End of the loop "));
-
-
 	for (int32 i = 0; i < TowerCount; i++)
 	{
 		auto& MyTower = FoundTowers[i];
@@ -48,7 +37,6 @@ void ABattleBlasterGameMode::BeginPlay()
 		if (Tower && Tank) {
 			Tower->Tank = Tank;
 			Tower->RotateTurret(Tank->GetActorLocation());
-			UE_LOG(LogTemp, Display, TEXT("Tower found: %s"), *Tower->GetName());
 		}
 	}
 
@@ -66,4 +54,27 @@ void ABattleBlasterGameMode::BeginPlay()
 void ABattleBlasterGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
+{
+	if (DeadActor == Tank) {
+		Tank->HandleDestruction();
+		UE_LOG(LogTemp, Warning, TEXT("YOU LOSE!"));
+	}
+	else {
+		ATower* Tower = Cast<ATower>(DeadActor);
+		if (Tower) {
+			TowerCount--;
+			Tower->HandleDestruction();
+			UE_LOG(LogTemp, Warning, TEXT("TowerCount: %d"), TowerCount);
+			CheckForTower();
+		}
+	}
+}
+
+void ABattleBlasterGameMode::CheckForTower() {
+	if(TowerCount <= 0) {
+		UE_LOG(LogTemp, Warning, TEXT("No more towers left! YOU WIN!!"));
+	}
 }

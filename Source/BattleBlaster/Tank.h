@@ -64,4 +64,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float RotationSpeed = 100.0f;
 
+	void HandleDestruction();
+	void SetPlayerEnabled(bool enabled);
+
+	APlayerController* PlayerController;
+
+	bool IsAlive = true;
 };

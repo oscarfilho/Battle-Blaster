@@ -40,8 +40,6 @@ void ABasePawn::RotateTurret(FVector LookAtTarget)
 
 void ABasePawn::Fire()
 {
-	UE_LOG(LogTemp, Display, TEXT("Fire was called at BasePawn Class!"));
-
 	FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 	FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
 
@@ -50,8 +48,9 @@ void ABasePawn::Fire()
 	if (AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnLocation, SpawnRotation)) {
 		Projectile->SetOwner(this);
 	}
+}
 
-
-	UE_LOG(LogTemp, Display, TEXT("Spawn Location: %s"), *SpawnLocation.ToCompactString());
-	UE_LOG(LogTemp, Display, TEXT("Spawn Rotation: %s"), *SpawnRotation.ToCompactString());
+void ABasePawn::HandleDestruction()
+{
+	UE_LOG(LogTemp, Display, TEXT("BasePawn HandleDestruction called for %s"), *GetName());
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "BattleBlasterGameMode.h"
 #include "HealthComponent.generated.h"
 
 
@@ -33,4 +34,5 @@ public:
 	UFUNCTION()
 	void OnDamageTaken(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	ABattleBlasterGameMode* BattleBlasterGameMode;
 };

@@ -41,4 +41,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<AProjectile> ProjectileClass;
+
+	void HandleDestruction();
 };

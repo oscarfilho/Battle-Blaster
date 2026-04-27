@@ -35,6 +35,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	float Damage = 10.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float InitialSpeed = 1000.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxSpeed = 1300.0f;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

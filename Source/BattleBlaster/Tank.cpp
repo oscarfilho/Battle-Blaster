@@ -20,8 +20,8 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
+	PlayerController = Cast<APlayerController>(Controller);
+	if (PlayerController) {
 		
 		if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
 		{
@@ -68,8 +68,6 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::MoveInput(const FInputActionValue& value)
 {
-	UE_LOG(LogTemp, Display, TEXT("MoveInput was called!"));
-
 	float InputValue = value.Get<float>();
 
 	FVector DeltaLocation = FVector(0.0f, 0.0f, 0.0f);
@@ -79,13 +77,7 @@ void ATank::MoveInput(const FInputActionValue& value)
 
 	AddActorLocalOffset(DeltaLocation, true, ActorHitResult);
 	
-	if(AActor* CollidedActor = ActorHitResult->GetActor())
-	{
-		UE_LOG(LogTemp, Display, TEXT("Collided with: %s"), *CollidedActor->GetName());
-	}
-
-
-	UE_LOG(LogTemp, Display, TEXT("Delta Location: %s"), *DeltaLocation.ToCompactString());
+	AActor* CollidedActor = ActorHitResult->GetActor();
 
 }
 
@@ -97,6 +89,27 @@ void ATank::RotateInput(const FInputActionValue& value)
 	DeltaRotation.Yaw = InputValue * RotationSpeed * GetWorld()->GetDeltaSeconds();
 
 	AddActorLocalRotation(DeltaRotation, true);
-	UE_LOG(LogTemp, Display, TEXT("Delta Rotation: %s"), *DeltaRotation.ToCompactString());
 
+}
+void ATank::HandleDestruction()
+{
+	Super::HandleDestruction();
+	IsAlive = false;
+	UE_LOG(LogTemp, Display, TEXT("ATank HandleDestruction called for %s"), *GetName());
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+	SetPlayerEnabled(false);
+	SetActorEnableCollision(false);
+}
+
+void ATank::SetPlayerEnabled(bool enabled)
+{
+	if (PlayerController) {
+		if (enabled) {
+			EnableInput(PlayerController);
+		}
+		else {
+			DisableInput(PlayerController);
+		}
+	}
 }

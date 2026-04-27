@@ -14,6 +14,9 @@ AProjectile::AProjectile()
 	SetRootComponent(ProjectileMesh);
 
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
+
+	ProjectileMovementComp->InitialSpeed = InitialSpeed;
+	ProjectileMovementComp->MaxSpeed = MaxSpeed;
 }
 
 // Called when the game starts or when spawned
