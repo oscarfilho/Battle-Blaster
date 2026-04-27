@@ -20,7 +20,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	ABattleBlasterGameMode();
+	UPROPERTY(EditAnywhere, Category = "Game Loop")
+	float GameOverOverlay = 3.0f;
+
+	bool IsGameOver = false;
+	bool IsVictory = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,5 +35,7 @@ public:
 
 	void ActorDied(AActor* DeadActor);
 
-	void CheckForTower();
+	bool TowersHaveDestructed();
+	void OnGameOverTimerTimeout();
+
 };

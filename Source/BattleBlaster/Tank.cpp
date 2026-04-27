@@ -44,7 +44,7 @@ void ATank::Tick(float DeltaTime)
 		
 		APController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResultOut);
 		//HitResultOut.ImpactPoint
-		DrawDebugSphere(GetWorld(), HitResultOut.ImpactPoint, 25.0f, 12, FColor::Red, false, -1.0f);
+		//DrawDebugSphere(GetWorld(), HitResultOut.ImpactPoint, 25.0f, 12, FColor::Red, false, -1.0f);
 
 		if (HitResultOut.ImpactPoint != FVector::ZeroVector) {
 			RotateTurret(HitResultOut.ImpactPoint);
@@ -99,7 +99,7 @@ void ATank::HandleDestruction()
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 	SetPlayerEnabled(false);
-	SetActorEnableCollision(false);
+	
 }
 
 void ATank::SetPlayerEnabled(bool enabled)
@@ -111,5 +111,7 @@ void ATank::SetPlayerEnabled(bool enabled)
 		else {
 			DisableInput(PlayerController);
 		}
+
+		PlayerController->SetShowMouseCursor(enabled);
 	}
 }

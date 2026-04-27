@@ -3,13 +3,10 @@
 
 #include "BattleBlasterGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "BattleBlasterInstance.h"
 #include "Tower.h"
 #include "Tank.h"
 
-ABattleBlasterGameMode::ABattleBlasterGameMode()
-{
-	UE_LOG(LogTemp, Display, TEXT("ABattleBlasterGameMode was created! Called the constructor!"));
-}
 
 void ABattleBlasterGameMode::BeginPlay()
 {
@@ -61,6 +58,7 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 	if (DeadActor == Tank) {
 		Tank->HandleDestruction();
 		UE_LOG(LogTemp, Warning, TEXT("YOU LOSE!"));
+		IsGameOver = true;
 	}
 	else {
 		ATower* Tower = Cast<ATower>(DeadActor);
@@ -68,13 +66,41 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 			TowerCount--;
 			Tower->HandleDestruction();
 			UE_LOG(LogTemp, Warning, TEXT("TowerCount: %d"), TowerCount);
-			CheckForTower();
+			IsGameOver = IsVictory = TowersHaveDestructed();
 		}
+	}
+
+	if (IsGameOver) {
+		FString GameOverMessage = IsVictory ? TEXT("Victory!") : TEXT("Defeat!");
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *GameOverMessage);
+
+		FTimerHandle GameOverTimerHandle;
+		GetWorldTimerManager().SetTimer(GameOverTimerHandle, this, &ABattleBlasterGameMode::OnGameOverTimerTimeout, GameOverOverlay, false);
 	}
 }
 
-void ABattleBlasterGameMode::CheckForTower() {
-	if(TowerCount <= 0) {
-		UE_LOG(LogTemp, Warning, TEXT("No more towers left! YOU WIN!!"));
+bool ABattleBlasterGameMode::TowersHaveDestructed() {
+	return TowerCount <= 0;
+}
+
+void ABattleBlasterGameMode::OnGameOverTimerTimeout()
+{
+	UE_LOG(LogTemp, Display, TEXT("Showing the game over timer overlay now..."));
+	FString CurrentGameLevel = UGameplayStatics::GetCurrentLevelName(GetWorld());
+
+	UGameInstance* GameInstance = GetGameInstance();
+	UBattleBlasterInstance* BattleBlasterInstance = Cast<UBattleBlasterInstance>(GameInstance);
+	if(BattleBlasterInstance) {
+		UE_LOG(LogTemp, Warning, TEXT("BattleBlasterInstance found!"));
 	}
+
+	//if (IsVictory) {
+	//	// Load the next level
+	//	UGameplayStatics::OpenLevel(GetWorld(), *CurrentGameLevel, false);
+	//}
+	//else {
+	//	// Reload the current level
+	//	UGameplayStatics::OpenLevel(GetWorld(), *CurrentGameLevel, false);
+	//}
+	
 }
