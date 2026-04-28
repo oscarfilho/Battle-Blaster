@@ -26,6 +26,12 @@ public:
 	bool IsGameOver = false;
 	bool IsVictory = false;
 
+	UPROPERTY(Editanywhere, Category = "Game Loop")
+	int32 CountdownDelay = 3;
+
+	int32 CountdownSeconds;
+	FTimerHandle CountdownTimerHandle;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -38,4 +44,5 @@ public:
 	bool TowersHaveDestructed();
 	void OnGameOverTimerTimeout();
 
+	void OnCountdownTimerTimeout();
 };

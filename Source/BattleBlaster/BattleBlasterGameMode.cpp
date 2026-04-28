@@ -37,6 +37,10 @@ void ABattleBlasterGameMode::BeginPlay()
 		}
 	}
 
+	CountdownSeconds = CountdownDelay;
+	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleBlasterGameMode::OnCountdownTimerTimeout, 1.0f, true);
+
+
 	/*for (AActor* MyActor: FoundTowers) {
 
 		ATower* MyTower = Cast<ATower>(MyActor);
@@ -44,8 +48,27 @@ void ABattleBlasterGameMode::BeginPlay()
 			UE_LOG(LogTemp, Display, TEXT("Tower found: %s"), *MyTower->GetName());
 		}
 	}*/
+}
 
 
+void ABattleBlasterGameMode::OnCountdownTimerTimeout()
+{
+	CountdownSeconds--;
+	
+	if (CountdownSeconds > 0) {
+		UE_LOG(LogTemp, Warning, TEXT("CountdownSeconds: %d"), CountdownSeconds);
+	}
+	else if(CountdownSeconds == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("Countdown done and CountdownTimerHangle Cleared!"));
+		if (Tank) {
+			Tank->SetPlayerEnabled(true);
+			UE_LOG(LogTemp, Warning, TEXT("GOOOO BASTARD!!"));
+		}
+	}
+	else {
+		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
+		UE_LOG(LogTemp, Warning, TEXT("Cleared timer!"));
+	}
 }
 
 void ABattleBlasterGameMode::Tick(float DeltaTime)
@@ -94,13 +117,13 @@ void ABattleBlasterGameMode::OnGameOverTimerTimeout()
 		UE_LOG(LogTemp, Warning, TEXT("BattleBlasterInstance found!"));
 	}
 
-	//if (IsVictory) {
-	//	// Load the next level
-	//	UGameplayStatics::OpenLevel(GetWorld(), *CurrentGameLevel, false);
-	//}
-	//else {
-	//	// Reload the current level
-	//	UGameplayStatics::OpenLevel(GetWorld(), *CurrentGameLevel, false);
-	//}
+	if (IsVictory) {
+		BattleBlasterInstance->LoadNextLevel();
+	}
+	else {
+		// Reload the current level
+		BattleBlasterInstance->RestartCurrentLevel();
+	}
 	
 }
+
