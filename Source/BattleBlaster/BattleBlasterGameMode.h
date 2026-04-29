@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Tank.h"
+#include "ScreenMessage.h"
 #include "BattleBlasterGameMode.generated.h"
 
 /**
@@ -20,6 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UScreenMessage> ScreenMessageClass;
+	UScreenMessage* ScreenMessageWidget;
+
 	UPROPERTY(EditAnywhere, Category = "Game Loop")
 	float GameOverOverlay = 3.0f;
 

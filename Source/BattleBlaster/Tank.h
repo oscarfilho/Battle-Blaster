@@ -9,7 +9,7 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
-
+#include "Components/BoxComponent.h"
 #include "Tank.generated.h"
 
 class UCameraComponent;
@@ -68,6 +68,8 @@ public:
 	void SetPlayerEnabled(bool enabled);
 
 	APlayerController* PlayerController;
-
+	
 	bool IsAlive = true;
+
+	UBoxComponent* BoxComponent;
 };

@@ -18,7 +18,6 @@ void ABattleBlasterGameMode::BeginPlay()
 	TowerCount = FoundTowers.Num();
 
 	UE_LOG(LogTemp, Warning, TEXT("TowerCount: %d"), TowerCount);
-
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (PlayerPawn) {
 		Tank = Cast<ATank>(PlayerPawn);
@@ -37,6 +36,14 @@ void ABattleBlasterGameMode::BeginPlay()
 		}
 	}
 
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	
+	if (PlayerController) 
+	{
+		ScreenMessageWidget = CreateWidget<UScreenMessage>(PlayerController, ScreenMessageClass);
+		ScreenMessageWidget->AddToPlayerScreen();
+		ScreenMessageWidget->SetMessageText(FString("Get Ready!"));
+	}
 	CountdownSeconds = CountdownDelay;
 	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleBlasterGameMode::OnCountdownTimerTimeout, 1.0f, true);
 
@@ -54,20 +61,20 @@ void ABattleBlasterGameMode::BeginPlay()
 void ABattleBlasterGameMode::OnCountdownTimerTimeout()
 {
 	CountdownSeconds--;
-	
+	ScreenMessageWidget->SetMessageText(FString::Printf(TEXT("%d"), CountdownSeconds));
+
 	if (CountdownSeconds > 0) {
 		UE_LOG(LogTemp, Warning, TEXT("CountdownSeconds: %d"), CountdownSeconds);
 	}
 	else if(CountdownSeconds == 0) {
-		UE_LOG(LogTemp, Warning, TEXT("Countdown done and CountdownTimerHangle Cleared!"));
 		if (Tank) {
 			Tank->SetPlayerEnabled(true);
-			UE_LOG(LogTemp, Warning, TEXT("GOOOO BASTARD!!"));
+			ScreenMessageWidget->SetMessageText(TEXT("GOOOO!"));
 		}
 	}
 	else {
+		ScreenMessageWidget->SetVisibility(ESlateVisibility::Hidden);
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
-		UE_LOG(LogTemp, Warning, TEXT("Cleared timer!"));
 	}
 }
 
@@ -80,6 +87,7 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 {
 	if (DeadActor == Tank) {
 		Tank->HandleDestruction();
+		ScreenMessageWidget->SetVisibility(ESlateVisibility::Visible);
 		UE_LOG(LogTemp, Warning, TEXT("YOU LOSE!"));
 		IsGameOver = true;
 	}
@@ -95,7 +103,8 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 
 	if (IsGameOver) {
 		FString GameOverMessage = IsVictory ? TEXT("Victory!") : TEXT("Defeat!");
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *GameOverMessage);
+		ScreenMessageWidget->SetMessageText(GameOverMessage);
+		ScreenMessageWidget->SetVisibility(ESlateVisibility::Visible);
 
 		FTimerHandle GameOverTimerHandle;
 		GetWorldTimerManager().SetTimer(GameOverTimerHandle, this, &ABattleBlasterGameMode::OnGameOverTimerTimeout, GameOverOverlay, false);
