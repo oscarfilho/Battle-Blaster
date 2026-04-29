@@ -53,4 +53,9 @@ void ABasePawn::Fire()
 void ABasePawn::HandleDestruction()
 {
 	UE_LOG(LogTemp, Display, TEXT("BasePawn HandleDestruction called for %s"), *GetName());
+
+	if (DeathParticles) {
+		UE_LOG(LogTemp, Warning, TEXT("Spawning death particles for %s"), *GetName());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), DeathParticles, GetActorLocation(), GetActorRotation());
+	}
 }

@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Projectile.h"
+#include "NiagaraFunctionLibrary.h"
+
 #include "BasePawn.generated.h"
 
 UCLASS()
@@ -43,4 +45,7 @@ public:
 	TSubclassOf<AProjectile> ProjectileClass;
 
 	void HandleDestruction();
+
+	UPROPERTY(EditAnywhere, Category="Effects")
+	UNiagaraSystem* DeathParticles;
 };

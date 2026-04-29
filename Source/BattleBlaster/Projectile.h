@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
 #include "Projectile.generated.h"
 
 
@@ -31,6 +34,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	UProjectileMovementComponent* ProjectileMovementComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	UNiagaraComponent* TrailEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	UNiagaraSystem* HitParticles;
+
 
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	float Damage = 10.0f;
