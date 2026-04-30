@@ -51,6 +51,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxSpeed = 1300.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* LaunchSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

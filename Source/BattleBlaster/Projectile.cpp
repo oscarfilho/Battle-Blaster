@@ -7,7 +7,7 @@
 // Sets default values
 AProjectile::AProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
@@ -29,6 +29,9 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+	if (LaunchSound) {
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaunchSound, GetActorLocation());
+	}
 }
 
 // Called every frame
@@ -42,19 +45,33 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 {
 	AActor* MyOwner = GetOwner();
 
-	if (MyOwner) 
+	if (MyOwner)
 	{
 		if (OtherActor && (OtherActor != MyOwner) && (OtherActor != this))
 		{
-			float DamageTaken = UGameplayStatics::ApplyDamage(OtherActor, 
-				Damage, 
+			float DamageTaken = UGameplayStatics::ApplyDamage(OtherActor,
+				Damage,
 				MyOwner->GetInstigatorController(),
-				this, 
+				this,
 				UDamageType::StaticClass());
 			if (HitParticles) {
 				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitParticles, GetActorLocation(), GetActorRotation());
 			}
-			
+
+			if (HitSound) 
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation());
+			}
+
+			if (HitCameraShakeClass)
+			{
+				APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+				if (PlayerController)
+				{
+					PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+				}
+			}
+
 		}
 	}
 
